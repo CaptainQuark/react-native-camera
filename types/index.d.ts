@@ -138,7 +138,6 @@ export interface RNCameraProps {
   pendingAuthorizationView?: JSX.Element;
   useCamera2Api?: boolean;
   exposure?: number;
-  exposureISO?: number;
   whiteBalance?: keyof WhiteBalance;
   captureAudio?: boolean;
 
