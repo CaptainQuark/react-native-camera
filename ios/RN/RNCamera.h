@@ -32,6 +32,7 @@
 @property(copy, nonatomic) NSDictionary *autoFocusPointOfInterest;
 @property(assign, nonatomic) float focusDepth;
 @property(assign, nonatomic) NSInteger whiteBalance;
+@property(assign, nonatomic) float exposureISO;
 @property(assign, nonatomic) AVCaptureSessionPreset pictureSize;
 @property(nonatomic, assign) BOOL isReadingBarCodes;
 @property(nonatomic, assign) BOOL isRecording;
@@ -55,6 +56,7 @@
 - (void)updateAutoFocusPointOfInterest;
 - (void)updateZoom;
 - (void)updateWhiteBalance;
+- (void)updateExposure;
 - (void)updatePictureSize;
 // Face Detection props
 - (void)updateTrackingEnabled:(id)requestedTracking;

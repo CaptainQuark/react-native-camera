@@ -238,6 +238,11 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
             CGPoint autofocusPoint = CGPointMake(xValue, yValue);
             [device setFocusPointOfInterest:autofocusPoint];
             [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+            
+            // Manual selection of AFPoI also resets the manual exposure,
+            // if there was any.
+            self.exposureISO = 0;
+            [device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
           }
         else {
             RCTLogWarn(@"AutoFocusPointOfInterest not supported");
@@ -348,6 +353,43 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
         }
     }
 
+    [device unlockForConfiguration];
+}
+
+- (void)updateExposure
+{
+    AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
+    NSError *error = nil;
+    
+    if (![device lockForConfiguration:&error]) {
+        if (error) {
+            RCTLogError(@"%s: %@", __func__, error);
+        }
+        return;
+    }
+    
+    // If no exposureISO is provided (that is, the user may have reset the manual value) or
+    // if we're out of range, reset to default config.
+    if(!self.exposureISO || self.exposureISO < device.activeFormat.minISO || self.exposureISO > device.activeFormat.maxISO){
+        if(self.exposureISO < device.activeFormat.minISO || self.exposureISO > device.activeFormat.maxISO){
+            NSLog(@"minISO: %@", device.activeFormat.minISO);
+            NSLog(@"maxISO: %@", device.activeFormat.maxISO);
+            RCTLogError(@"Invalid ISO for exposure provided: %@", self.exposureISO);
+        }
+        
+        [device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        [device unlockForConfiguration];
+        return;
+    }
+
+    // Make sure we're in AVCaptureExposureModeCustom, else
+    // the ISO + duration time won't apply.
+    if(device.exposureMode !== AVCaptureExposureModeCustom){
+        [device setExposureMode:AVCaptureExposureModeCustom];
+    }
+    
+    // Only set the ISO for now, duration will default.
+    [device setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent ISO:self.exposureISO completionHandler:nil];
     [device unlockForConfiguration];
 }
 
