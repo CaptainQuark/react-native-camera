@@ -241,7 +241,7 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
             
             // Manual selection of AFPoI also resets the manual exposure,
             // if there was any.
-            self.exposureISO = 0;
+            self.exposureISO = nil;
             [device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
           }
         else {
@@ -358,6 +358,7 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
 
 - (void)updateExposure
 {
+    NSLog(@"exposureISO updateExposure called");
     AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
     NSError *error = nil;
     
