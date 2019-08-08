@@ -241,7 +241,7 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
             
             // Manual selection of AFPoI also resets the manual exposure,
             // if there was any.
-            self.exposureISO = nil;
+            self.exposure = nil;
             [device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
           }
         else {
@@ -358,7 +358,11 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
 
 - (void)updateExposure
 {
-    NSLog(@"exposureISO updateExposure called");
+    NSLog(@"exposure updateExposure called");
+    NSLog(@"exposure will get device ref");
+    
+    NSLog(@"exposure will get device ref");
+    
     AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
     NSError *error = nil;
     
@@ -369,34 +373,38 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
         return;
     }
     
-    // If no exposureISO is provided (that is, the user may have reset the manual value) or
+    NSLog(@"exposure minISO: %f", device.activeFormat.minISO);
+    NSLog(@"exposure maxISO: %f", device.activeFormat.maxISO);
+    NSLog(@"exposure self.exposure: %f", self.exposure);
+    
+    // If no exposure is provided (that is, the user may have reset the manual value) or
     // if we're out of range, reset to default config.
-    if(!self.exposureISO || self.exposureISO < device.activeFormat.minISO || self.exposureISO > device.activeFormat.maxISO){
-        if(self.exposureISO < device.activeFormat.minISO || self.exposureISO > device.activeFormat.maxISO){
-            NSLog(@"exposureISO minISO: %@", device.activeFormat.minISO);
-            NSLog(@"exposureISO maxISO: %@", device.activeFormat.maxISO);
-            RCTLogError(@"exposureISO Invalid ISO for exposure provided: %@", self.exposureISO);
+    if(!self.exposure || self.exposure < device.activeFormat.minISO || self.exposure > device.activeFormat.maxISO){
+        if(self.exposure < device.activeFormat.minISO || self.exposure > device.activeFormat.maxISO){
+            NSLog(@"exposure minISO: %f", device.activeFormat.minISO);
+            NSLog(@"exposure maxISO: %f", device.activeFormat.maxISO);
+            RCTLogError(@"exposure Invalid ISO for exposure provided: %f", self.exposure);
         }
         
-        RCTLogWarn(@"exposureISO minISO: %@", device.activeFormat.minISO);
-        RCTLogWarn(@"exposureISO maxISO: %@", device.activeFormat.maxISO);
-        RCTLogWarn(@"exposureISO self.exposureISO: %@", self.exposureISO);
+        RCTLogWarn(@"exposure minISO: %f", device.activeFormat.minISO);
+        RCTLogWarn(@"exposure maxISO: %f", device.activeFormat.maxISO);
+        RCTLogWarn(@"exposure self.exposure: %f", self.exposure);
         
         [device setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
         [device unlockForConfiguration];
         return;
     }
-
+    
     // Make sure we're in AVCaptureExposureModeCustom, else
     // the ISO + duration time won't apply.
     if(device.exposureMode != AVCaptureExposureModeCustom){
         [device setExposureMode:AVCaptureExposureModeCustom];
     }
     
-     RCTLogWarn(@"exposureISO calling setExposureModeCustomWithDuration");
+    RCTLogWarn(@"exposure calling setExposureModeCustomWithDuration");
     
     // Only set the ISO for now, duration will default.
-    [device setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent ISO:self.exposureISO completionHandler:nil];
+    [device setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent ISO:self.exposure completionHandler:nil];
     [device unlockForConfiguration];
 }
 

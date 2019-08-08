@@ -206,11 +206,11 @@ RCT_CUSTOM_VIEW_PROPERTY(whiteBalance, NSInteger, RNCamera)
     [view updateWhiteBalance];
 }
 
-RCT_CUSTOM_VIEW_PROPERTY(exposureISO, NSNumber, RNCamera)
+RCT_CUSTOM_VIEW_PROPERTY(exposure, NSNumber, RNCamera)
 {
     //[view setExposureISO:[RCTConvert float:json]];
-    NSLog("exposureISO RCT_CUSTOM_VIEW_PROPERTY called");
-    view.exposureISO = [RCTConvert float:json];
+    NSLog("exposure RCT_CUSTOM_VIEW_PROPERTY called");
+    view.exposure = [RCTConvert float:json];
     [view updateExposure];
 }
 
