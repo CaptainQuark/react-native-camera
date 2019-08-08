@@ -209,7 +209,7 @@ RCT_CUSTOM_VIEW_PROPERTY(whiteBalance, NSInteger, RNCamera)
 RCT_CUSTOM_VIEW_PROPERTY(exposureISO, NSNumber, RNCamera)
 {
     [view setExposureISO:[RCTConvert float:json]];
-    [view updateWhiteBalance];
+    [view updateExposure];
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(pictureSize, NSString *, RNCamera)
