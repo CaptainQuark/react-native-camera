@@ -388,7 +388,7 @@ static NSDictionary *defaultFaceDetectorOptions = nil;
 
     // Make sure we're in AVCaptureExposureModeCustom, else
     // the ISO + duration time won't apply.
-    if(device.exposureMode !== AVCaptureExposureModeCustom){
+    if(device.exposureMode != AVCaptureExposureModeCustom){
         [device setExposureMode:AVCaptureExposureModeCustom];
     }
     
